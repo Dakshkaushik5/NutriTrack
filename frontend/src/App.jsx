@@ -13,14 +13,12 @@ function App() {
   return (
     <Router>
       <div className="bg-gray-50 min-h-screen">
-        <Navbar />
         <main>
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            
+            <Route path="/signup" element={<SignupPage />} />            
             {/* Protected User Routes */}
             <Route element={<PrivateRoute />}>
               <Route path="/get-plan" element={<DietFormPage />} />
