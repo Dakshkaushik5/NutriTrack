@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -44,7 +44,7 @@ exports.registerUser = async (req, res) => {
       { expiresIn: 360000 }, // Expires in a long time for dev
       (err, token) => {
         if (err) throw err;
-        res.json({ token });
+        res.json({ token, user: { role: user.role } });
       }
     );
   } catch (err) {
@@ -86,7 +86,7 @@ exports.loginUser = async (req, res) => {
       { expiresIn: 360000 },
       (err, token) => {
         if (err) throw err;
-        res.json({ token });
+        res.json({ token, user: { role: user.role } });
       }
     );
   } catch (err) {

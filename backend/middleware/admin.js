@@ -1,12 +1,15 @@
-const express = require('express');
-const router = express.Router();
-const auth = require('../middleware/auth');
-const admin = require('../middleware/admin');
-const { getAllPlanRequests } = require('../controllers/adminController');
+const User = require('../models/user');
 
-// @route   GET api/admin/plan-requests
-// @desc    Get all diet plan requests
-// @access  Private, Admin
-router.get('/plan-requests', [auth, admin], getAllPlanRequests);
+module.exports = async function (req, res, next) {
+  try {
+    // We assume the 'auth' middleware has already run and attached the user to the request.
+    const user = await User.findById(req.user.id);
 
-module.exports = router;
+    if (user.role !== 'admin') {
+      return res.status(403).json({ msg: 'Access denied. Not an admin.' });
+    }
+    next();
+  } catch (err) {
+    res.status(401).json({ msg: 'Token is not valid' });
+  }
+};
