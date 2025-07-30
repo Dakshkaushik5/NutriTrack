@@ -34,19 +34,29 @@ const SignupPage = () => {
 	const onChange = (e) =>
 		setFormData({...formData, [e.target.name]: e.target.value});
 
-	const onSubmit = async (e) => {
-		e.preventDefault();
+const onSubmit = async (e) => {
+	e.preventDefault();
+	setError("");
 
-		try {
-			const {data} = await register({name, email, password});
-			localStorage.setItem("token", data.token);
+	try {
+		const { data } = await register({ name, email, password });
+		localStorage.setItem("token", data.token);
+		localStorage.setItem("role", data.user.role); // optional
+
+		// Conditional redirect based on user role
+		if (data.user.role === "admin") {
+			navigate("/admin/dashboard");
+		} else {
 			navigate("/dashboard");
-		} catch (err) {
-			setError(
-				err.response?.data?.msg || "Registration failed. Please try again."
-			);
 		}
-	};
+	} catch (err) {
+		setError(
+			err.response?.data?.msg || "Registration failed. Please try again."
+		);
+	}
+};
+
+
 
 	return (
 		<div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
