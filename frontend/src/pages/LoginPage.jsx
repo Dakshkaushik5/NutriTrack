@@ -27,8 +27,7 @@ const LoginPage = () => {
 		setShowPassword(!showPassword);
 	};
 
-	const onChange = (e) =>
-		setFormData({...formData, [e.target.name]: e.target.value});
+	const onChange = (e) =>	setFormData({...formData, [e.target.name]: e.target.value});
 
 	const onSubmit = async (e) => {
 		e.preventDefault();
@@ -36,8 +35,15 @@ const LoginPage = () => {
 		try {
 			const {data} = await login(formData);
 			localStorage.setItem("token", data.token);
-			navigate("/dashboard");
-		} catch (err) {
+			// Redirect based on user role
+			if (data.role === "admin") {
+				navigate("/admin/dashboard"); // Redirect admins to admin dashboard
+			} else {
+				navigate("/dashboard"); 
+				// Redirect regular users to user dashboard
+			}
+			window.location.reload(); // Reload the page to update the UI
+		} 	catch (err) {
 			setError(err.response?.data?.msg || "Login failed. Please try again.");
 		}
 	};

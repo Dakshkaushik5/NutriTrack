@@ -2,6 +2,8 @@ const Razorpay = require('razorpay');
 const crypto = require('crypto');
 const shortid = require('shortid');
 const Order = require('../models/Order');
+const User = require('../models/User'); // Import User model to get user details
+const sendEmail = require('../utils/sendEmail'); // Import the email utility
 require('dotenv').config();
 
 const razorpay = new Razorpay({
@@ -47,7 +49,7 @@ exports.createOrder = async (req, res) => {
 };
 
 // @route   POST api/payment/verify
-// @desc    Verify payment signature
+// @desc    Verify payment signature and notify admin
 // @access  Private
 exports.verifyPayment = async (req, res) => {
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
@@ -63,7 +65,7 @@ exports.verifyPayment = async (req, res) => {
 
   if (isAuthentic) {
     // Payment is authentic, update order in DB
-    await Order.findOneAndUpdate(
+    const order = await Order.findOneAndUpdate(
       { 'razorpay.orderId': razorpay_order_id },
       {
         status: 'paid',
@@ -71,6 +73,31 @@ exports.verifyPayment = async (req, res) => {
         'razorpay.signature': razorpay_signature,
       }
     );
+
+    // --- Send Notification Email to Admin ---
+    try {
+        const user = await User.findById(order.user);
+        const emailHtml = `
+            <h1>New Diet Plan Order!</h1>
+            <p>You have received a new diet plan request and successful payment.</p>
+            <h3>Client Details:</h3>
+            <ul>
+                <li><strong>Name:</strong> ${user.name}</li>
+                <li><strong>Email:</strong> ${user.email}</li>
+            </ul>
+            <p>Please log in to your admin dashboard to view the full details of the request and prepare their plan.</p>
+        `;
+        await sendEmail({
+            email: process.env.ADMIN_EMAIL,
+            subject: `New Order from ${user.name}`,
+            html: emailHtml,
+        });
+        console.log(`New order notification sent to admin for user ${user.email}`);
+    } catch (emailError) {
+        console.error('Failed to send admin notification email:', emailError);
+    }
+    // --- End of email logic ---
+
     res.json({ success: true, message: 'Payment successful' });
   } else {
     res.status(400).json({ success: false, message: 'Payment verification failed' });

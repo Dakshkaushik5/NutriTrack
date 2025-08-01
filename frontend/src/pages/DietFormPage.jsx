@@ -23,24 +23,25 @@ const DietFormPage = () => {
 
   const displayRazorpay = async (planRequestId) => {
     try {
-      // 1. Create a Razorpay Order
+      // 1. Create a Razorpay Order from your backend
       const { data: order } = await createOrder({ amount: 499, planRequestId }); // Example amount: 499 INR
 
       const options = {
-        key: 'YOUR_RAZORPAY_KEY_ID', // Get this from your Razorpay dashboard
+        key: 'rzp_test_zzqQvWlpHUOckS',
         amount: order.amount,
         currency: order.currency,
         name: 'NutriTrack Diet Plan',
         description: 'Personalized Diet Plan Service',
         order_id: order.id,
         handler: async function (response) {
-          // 2. Verify the payment
+          // 2. This function is called after a successful payment
           try {
             const verificationData = {
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_order_id: response.razorpay_order_id,
               razorpay_signature: response.razorpay_signature,
             };
+            // 3. Verify the payment on your backend
             const { data } = await verifyPayment(verificationData);
             if(data.success) {
                 alert('Payment Successful! Your diet plan will be sent to you shortly.');
@@ -50,23 +51,35 @@ const DietFormPage = () => {
             }
           } catch (error) {
             console.error('Payment verification error', error);
-            alert('Payment verification failed.');
+            alert(`Payment verification failed: ${error.response?.data?.message || error.message}`);
           }
         },
         prefill: {
+          // You can prefill user's name, email, etc. from your app's state
           name: 'Daksh Kaushik', // Example
           email: 'daksh@example.com',
           contact: '9999999999',
         },
         theme: {
-          color: '#34D399', // A nice green color
+          color: '#16a34a', // A nice green color
         },
+        // --- NEW: Payment Failure Handler ---
+        modal: {
+            ondismiss: function() {
+                console.log('Razorpay modal was closed.');
+            }
+        },
+        "payment.failed": function (response) {
+            alert(`Payment Failed. Error: ${response.error.description}`);
+            console.error('Payment Failed:', response.error);
+        }
       };
+      // 4. Open the Razorpay payment window
       const paymentObject = new window.Razorpay(options);
       paymentObject.open();
     } catch (error) {
       console.error('Razorpay order creation failed', error);
-      alert('Could not initiate payment. Please try again.');
+      alert(`Could not initiate payment: ${error.response?.data?.message || error.message}. Please check your API keys and ngrok setup.`);
     }
   };
 

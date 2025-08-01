@@ -1,4 +1,4 @@
-const DietPlanRequest = require('../models/DietPlanRequest');
+  const DietPlanRequest = require('../models/DietPlanRequest');
 const sendEmail = require('../utils/sendEmail'); // Import our new email utility
 
 // @route   GET api/admin/plan-requests
