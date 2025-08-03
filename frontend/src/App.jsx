@@ -1,4 +1,3 @@
-<<<<<<< HEAD
   import React from 'react';
   import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
   import HomePage from './pages/HomePage';
@@ -8,17 +7,6 @@
   import PrivateRoute from './components/PrivateRoute';
   import UserDashboard from './pages/UserDashboard'; // Import UserDashboard
   import AdminDashboard from './pages/AdminDashboard'; // Import AdminDashboard
-=======
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import SignupPage from './pages/SignupPage';
-import DietFormPage from './pages/DietFormPage';
-import PrivateRoute from './components/PrivateRoute';
-import UserDashboard from './pages/UserDashboard'; // Import UserDashboard
-import AdminDashboard from './pages/AdminDashboard'; // Import AdminDashboard
->>>>>>> aa9e7cd61d65f3c27ee11725d8d008a8fdbd1e8d
 
   function App() {
     return (

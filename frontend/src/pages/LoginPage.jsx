@@ -30,40 +30,19 @@ const LoginPage = () => {
 	const onChange = (e) =>	setFormData({...formData, [e.target.name]: e.target.value});
 
 	const onSubmit = async (e) => {
-<<<<<<< HEAD
 		e.preventDefault();
 		setError("");
-		try {
-			const {data} = await login(formData);
-			localStorage.setItem("token", data.token);
-			// Redirect based on user role
-			if (data.role === "admin") {
-				navigate("/admin/dashboard"); // Redirect admins to admin dashboard
-			} else {
-				navigate("/dashboard"); 
-				// Redirect regular users to user dashboard
-			}
-			window.location.reload(); // Reload the page to update the UI
-		} 	catch (err) {
-			setError(err.response?.data?.msg || "Login failed. Please try again.");
-=======
-	e.preventDefault();
-	setError("");
-
 	try {
-		const { data } = await login(formData);
+		const {data} = await login(formData);
 		localStorage.setItem("token", data.token);
-
-		// Optional: save role/user data if needed later
-		localStorage.setItem("role", data.user.role);
-
-		// Redirect based on role
-		if (data.user.role === "admin") {
-			navigate("/admin/dashboard");
+		// Redirect based on user role
+		if (data.role === "admin") {
+			navigate("/admin/dashboard"); // Redirect admins to admin dashboard
 		} else {
-			navigate("/dashboard");
->>>>>>> aa9e7cd61d65f3c27ee11725d8d008a8fdbd1e8d
+			navigate("/dashboard"); 
+			// Redirect regular users to user dashboard
 		}
+		window.location.reload(); // Reload the page to update the UI
 	} catch (err) {
 		setError(err.response?.data?.msg || "Login failed. Please try again.");
 	}

@@ -2,7 +2,7 @@ const Razorpay = require('razorpay');
 const crypto = require('crypto');
 const shortid = require('shortid');
 const Order = require('../models/Order');
-const User = require('../models/User'); // Import User model to get user details
+const User = require('../models/user');
 const sendEmail = require('../utils/sendEmail'); // Import the email utility
 require('dotenv').config();
 
