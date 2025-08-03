@@ -3,7 +3,7 @@ const crypto = require('crypto');
 const shortid = require('shortid');
 const Order = require('../models/Order');
 const User = require('../models/user');
-const sendEmail = require('../utils/sendEmail'); // Import the email utility
+const { sendClientStatusEmail } = require('../utils/sendEmail'); // Import the email utility
 require('dotenv').config();
 
 const razorpay = new Razorpay({
@@ -87,7 +87,7 @@ exports.verifyPayment = async (req, res) => {
             </ul>
             <p>Please log in to your admin dashboard to view the full details of the request and prepare their plan.</p>
         `;
-        await sendEmail({
+        await sendClientStatusEmail({
             email: process.env.ADMIN_EMAIL,
             subject: `New Order from ${user.name}`,
             html: emailHtml,

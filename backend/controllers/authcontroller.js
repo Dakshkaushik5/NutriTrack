@@ -1,7 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const sendEmail = require('../utils/sendEmail'); // Import the email utility
+const { sendClientStatusEmail } = require('../utils/sendEmail'); // Import the email utility
 require('dotenv').config();
 
 // @route   POST api/auth/register
@@ -39,7 +39,7 @@ exports.registerUser = async (req, res) => {
         <p>Your journey to a healthier lifestyle starts now. You can log in to your account and request your first personalized diet plan at any time.</p>
         <p>Best regards,<br/>The NutriTrack Team</p>
       `;
-      await sendEmail({
+      await sendClientStatusEmail({
         email: user.email,
         subject: 'Welcome to NutriTrack!',
         html: emailHtml,
