@@ -1,5 +1,5 @@
-  const DietPlanRequest = require('../models/DietPlanRequest');
-const sendEmail = require('../utils/sendEmail'); // Import our new email utility
+const DietPlanRequest = require('../models/DietPlanRequest');
+const { sendClientStatusEmail } = require('../utils/sendEmail'); // Import our new email utility
 
 // @route   GET api/admin/plan-requests
 // @desc    Get all user diet plan requests
@@ -42,7 +42,7 @@ exports.updatePlanRequestStatus = async (req, res) => {
           <p>Thank you for choosing NutriTrack!</p>
         `;
 
-        await sendEmail({
+        await sendClientStatusEmail({
           email: updatedRequest.user.email,
           subject: 'Your NutriTrack Diet Plan is Ready!',
           html: emailHtml,
