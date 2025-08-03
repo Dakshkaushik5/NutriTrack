@@ -1,4 +1,4 @@
-const User = require('../models/User');
+const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const sendEmail = require('../utils/sendEmail'); // Import the email utility
@@ -68,7 +68,7 @@ exports.registerUser = async (req, res) => {
       { expiresIn: 360000 }, // Expires in a long time for dev
       (err, token) => {
         if (err) throw err;
-        res.json({ token });
+        res.json({ token, user: { role: user.role } });
       }
     );
   } catch (err) {
@@ -80,12 +80,46 @@ exports.registerUser = async (req, res) => {
 // @route   POST api/auth/login
 // @desc    Authenticate user & get token
 // @access  Public
+<<<<<<< HEAD
   exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
     try {
       let user = await User.findOne({ email });
       if (!user) {
         return res.status(400).json({ msg: 'Invalid Credentials' });
+=======
+exports.loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // See if user exists
+    let user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ msg: 'Invalid Credentials' });
+    }
+
+    // Check if password matches
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ msg: 'Invalid Credentials' });
+    }
+
+    // Return jsonwebtoken
+    const payload = {
+      user: {
+        id: user.id,
+        role: user.role,
+      },
+    };
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: 360000 },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token, user: { role: user.role } });
+>>>>>>> aa9e7cd61d65f3c27ee11725d8d008a8fdbd1e8d
       }
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {

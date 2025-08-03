@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 const User = require('../models/User');
+=======
+const User = require('../models/user');
+>>>>>>> aa9e7cd61d65f3c27ee11725d8d008a8fdbd1e8d
 
 module.exports = async function (req, res, next) {
   try {
@@ -12,4 +16,8 @@ module.exports = async function (req, res, next) {
   } catch (err) {
     res.status(401).json({ msg: 'Token is not valid' });
   }
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> aa9e7cd61d65f3c27ee11725d8d008a8fdbd1e8d
