@@ -1,9 +1,6 @@
 const DietPlanRequest = require('../models/DietPlanRequest');
-const { sendClientStatusEmail } = require('../utils/sendEmail'); // Import our new email utility
+const sendEmail = require('../utils/sendEmail');
 
-// @route   GET api/admin/plan-requests
-// @desc    Get all user diet plan requests
-// @access  Private, Admin
 exports.getAllPlanRequests = async (req, res) => {
   try {
     const allRequests = await DietPlanRequest.find().populate('user', ['name', 'email']).sort({ date: -1 });
@@ -14,24 +11,15 @@ exports.getAllPlanRequests = async (req, res) => {
   }
 };
 
-// @route   PUT api/admin/plan-requests/:id
-// @desc    Update the status of a diet plan request and send email
-// @access  Private, Admin
 exports.updatePlanRequestStatus = async (req, res) => {
   try {
     const { status } = req.body;
-
-    const updatedRequest = await DietPlanRequest.findByIdAndUpdate(
-      req.params.id,
-      { status },
-      { new: true }
-    ).populate('user', ['name', 'email']);
-
+    const updatedRequest = await DietPlanRequest.findByIdAndUpdate(req.params.id, { status }, { new: true }).populate('user', ['name', 'email']);
     if (!updatedRequest) {
       return res.status(404).json({ msg: 'Plan request not found' });
     }
 
-    // --- NEW: Send Email Notification ---
+    // --- 3. Send Plan Completion Email to User ---
     if (status === 'Completed') {
       try {
         const emailHtml = `
@@ -41,23 +29,31 @@ exports.updatePlanRequestStatus = async (req, res) => {
           <p>Your dietitian will send it to you via your preferred contact method shortly. If you have any questions, feel free to reach out.</p>
           <p>Thank you for choosing NutriTrack!</p>
         `;
-
-        await sendClientStatusEmail({
+        await sendEmail({
           email: updatedRequest.user.email,
           subject: 'Your NutriTrack Diet Plan is Ready!',
           html: emailHtml,
         });
-
-        console.log('Completion email sent successfully.');
+        console.log(`Completion email sent to ${updatedRequest.user.email}`);
       } catch (emailError) {
         console.error('Failed to send completion email:', emailError);
-        // We don't stop the process, just log the error. The status update is more critical.
       }
     }
+    // --- End of email logic ---
 
     res.json(updatedRequest);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
   }
+};
+
+exports.getPlanRequestById = async (req, res) => {
+    try {
+      const request = await DietPlanRequest.findById(req.params.id).populate('user', ['name', 'email']);
+      if (!request) return res.status(404).json({ msg: 'Request not found' });
+      res.json(request);
+    } catch (err) {
+      res.status(500).send('Server Error');
+    }
 };
