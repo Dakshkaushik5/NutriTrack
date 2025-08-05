@@ -33,6 +33,11 @@ const DietPlanRequestSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  payment:{
+    type: String,
+    enum: ['paid', 'unpaid'],
+    default: 'unpaid', // Default status is unpaid
+  }
 });
 
 module.exports = mongoose.model('dietPlanRequest', DietPlanRequestSchema);

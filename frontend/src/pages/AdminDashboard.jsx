@@ -134,7 +134,7 @@ const AdminDashboard = () => {
           {requests.length > 0 ? (
             <div className="space-y-4">
               {requests.map((req) => {
-                const isPaid = req.paymentStatus === "Paid";
+                const isPaid = req.payment === "paid";
                 return (
                   <div
                     key={req._id}
@@ -203,6 +203,7 @@ const AdminDashboard = () => {
                          <div><p className="text-gray-500 font-semibold">Medical Conditions</p><p>{req.medicalHistory?.conditions?.join(", ") || "None"}</p></div>
                          <div><p className="text-gray-500 font-semibold">Status</p><p>{req.status}</p></div>
                          <div><p className="text-gray-500 font-semibold">Submitted On</p><p>{new Date(req.date).toLocaleString()}</p></div>
+                         <div><p className="text-gray-500 font-semibold">Payment Status</p><p>{req.payment}</p></div>
                       </div>
                     )}
                   </div>

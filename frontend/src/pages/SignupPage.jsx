@@ -69,7 +69,7 @@ const onSubmit = async (e) => {
 									<Leaf className="h-6 w-6 text-white" />
 								</div>
 								<span className="text-xl md:text-3xl font-bold bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
-									Nutri Track
+									NutriTrack
 								</span>
 							</div>
 							<Link

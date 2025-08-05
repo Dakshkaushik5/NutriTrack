@@ -42,6 +42,7 @@ exports.verifyPayment = async (req, res) => {
     // --- NEW: Send Notification Email to Admin ---
     try {
         const user = await User.findById(order.user);
+        await DietPlanRequest.findByIdAndUpdate(order.planRequest, { payment: 'paid' });
         const emailHtml = `
             <h1>New Diet Plan Order!</h1>
             <p>You have received a new diet plan request and successful payment.</p>
